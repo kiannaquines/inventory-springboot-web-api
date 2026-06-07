@@ -10,8 +10,11 @@ import com.example.inventory_api.auth.dto.LoginRequest;
 import com.example.inventory_api.auth.dto.RegisterRequest;
 import com.example.inventory_api.auth.service.AuthService;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+
 @RestController
 @RequestMapping("/auth")
+@SecurityRequirements
 public class AuthController {
 
     private final AuthService authService;
