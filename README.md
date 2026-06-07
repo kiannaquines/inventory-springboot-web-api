@@ -129,7 +129,7 @@ The Maven wrapper is included, so a separate Maven installation is not required.
 
 ### 1. Configure PostgreSQL and JWT
 
-The application defaults to PostgreSQL at `localhost:5432/postgres`. Override the defaults with environment variables:
+The application requires the database connection and JWT secret to be provided through environment variables:
 
 ```bash
 export SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/postgres
@@ -332,21 +332,27 @@ Common status codes:
 
 | Property | Environment variable | Default |
 | --- | --- | --- |
-| `spring.datasource.url` | `SPRING_DATASOURCE_URL` | `jdbc:postgresql://localhost:5432/postgres` |
-| `spring.datasource.username` | `SPRING_DATASOURCE_USERNAME` | `root` |
-| `spring.datasource.password` | `SPRING_DATASOURCE_PASSWORD` | `root` |
-| `jwt.secret` | `JWT_SECRET` | Development-only value in `application.properties` |
+| `spring.datasource.url` | `SPRING_DATASOURCE_URL` | Required |
+| `spring.datasource.username` | `SPRING_DATASOURCE_USERNAME` | Required |
+| `spring.datasource.password` | `SPRING_DATASOURCE_PASSWORD` | Required |
+| `jwt.secret` | `JWT_SECRET` | Required |
 | `jwt.expiration` | `JWT_EXPIRATION` | `86400000` |
+| `spring.jpa.hibernate.ddl-auto` | `SPRING_JPA_HIBERNATE_DDL_AUTO` | `update` |
+| `spring.jpa.show-sql` | `SPRING_JPA_SHOW_SQL` | `false` |
 | `rate-limit.capacity` | `RATE_LIMIT_CAPACITY` | `100` |
 | `rate-limit.refill-per-minute` | `RATE_LIMIT_REFILL_PER_MINUTE` | `100` |
 
-Do not use the committed development database credentials or JWT secret in production.
+Database credentials and the JWT secret are not committed to the repository. Store production values in a secret manager.
 
 ## Testing
 
 Run the complete test suite:
 
 ```bash
+SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/postgres \
+SPRING_DATASOURCE_USERNAME=root \
+SPRING_DATASOURCE_PASSWORD=root \
+JWT_SECRET="$(openssl rand -base64 32)" \
 ./mvnw test
 ```
 
